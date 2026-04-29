@@ -1,0 +1,22 @@
+name: 朝のデイリーレポート
+description: 平日9時にGit活動をまとめてSlackに投稿
+
+triggers:
+  schedule:
+    cron: "0 9 * * 1-5"
+    timezone: Asia/Tokyo
+
+prompt: |
+  昨日のGit活動を分析して、Slackに日報を投稿してください。
+  - マージされたPR一覧
+  - 未解決のIssue上位5件
+  - 本日の推奨アクション
+
+connectors:
+  github:
+    repo: "{{ github.repository }}"
+    permissions:
+      - contents:read
+      - issues:read
+  slack:
+    channel: "#dev-daily"

@@ -1,0 +1,32 @@
+name: PR自動レビュー
+description: PRが開かれたとき、コードの品質・セキュリティ・パフォーマンスを自動レビュー
+
+triggers:
+  github:
+    events:
+      - pull_request.opened
+      - pull_request.synchronize
+    filters:
+      draft: false
+      base_branch: main
+
+prompt: |
+  あなたは経験豊富なコードレビュアーです。
+  以下の観点でPRをレビューし、PRコメントとして投稿してください。
+
+  ## レビュー観点
+  1. **バグ・ロジックエラー**: 明らかな誤り・エッジケースの漏れ
+  2. **セキュリティ**: SQLインジェクション・XSS・認証・認可の問題
+  3. **パフォーマンス**: N+1クエリ・不要な計算・メモリリーク
+  4. **可読性**: 命名・コメント・複雑すぎる実装
+  5. **テスト**: カバレッジが不十分な部分の指摘
+
+  問題がない場合は「LGTM ✅」と投稿。
+  重要な問題が見つかった場合は「Changes requested」をリクエスト。
+
+connectors:
+  github:
+    repo: "{{ github.repository }}"
+    permissions:
+      - pull_requests:write
+      - contents:read

@@ -1,0 +1,22 @@
+name: CI失敗自動修正
+description: CIが失敗したとき、自動修正可能なエラーを修正してコミット
+
+triggers:
+  github:
+    events:
+      - check_run.completed
+    filters:
+      check_run.conclusion: failure
+
+prompt: |
+  CIが失敗しました。失敗ログを確認し、
+  Lintエラーや型エラーなど自動修正可能なものを修正して
+  PRにコミットしてください。
+  手動対応が必要な場合はPRにコメントで内容を説明してください。
+
+connectors:
+  github:
+    repo: "{{ github.repository }}"
+    permissions:
+      - contents:write
+      - pull_requests:write
